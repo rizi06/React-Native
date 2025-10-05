@@ -1,7 +1,9 @@
 import React from "react";
 import {
   Image,
+  Linking,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,15 +17,19 @@ const LIGHT = "#e5e7eb";
 const SURFACE = "#ffffff";
 
 const CONTACTS = [
-  { icon: "📞", label: "Phone Number", value: "+43 660 123 4567" },
-  { icon: "🌐", label: "Website", value: "www.rizgarcia.com" },
-  { icon: "✉️", label: "Email Address", value: "200005@studierende.htl-donaustadt.at" },
-  { icon: "📍", label: "Address", value: "Donaustadt, Vienna" },
+  { icon: "📞", label: "Phone Number", value: "+43 660 123 4567", link: "tel:+436601234567" },
+  { icon: "🌐", label: "Website", value: "www.htl-donaustadt.at", link: "https://www.htl-donaustadt.at" },
+  { icon: "✉️", label: "Email Address", value: "200005@studierende.htl-donaustadt.at", link: "mailto:200005@studierende.htl-donaustadt.at" },
+  { icon: "📍", label: "Address", value: "Donaustadt, Vienna", link: "https://maps.google.com/?q=Donaustadt+Vienna" },
 ];
 
 export default function BusinessCardScreen() {
   const { width } = useWindowDimensions();
   const isWide = width >= 720;
+
+  const handleLinkPress = (url: string) => {
+    Linking.openURL(url).catch(err => console.error("Failed to open URL:", err));
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: SURFACE }}>
@@ -48,13 +54,13 @@ export default function BusinessCardScreen() {
 
             <View style={{ marginTop: 20 }}>
               {CONTACTS.map((c, i) => (
-                <View key={i} style={styles.contactRow}>
+                <Pressable key={i} onPress={() => handleLinkPress(c.link)} style={styles.contactRow}>
                   <Text style={styles.contactIcon}>{c.icon}</Text>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.contactLabel}>{c.label} :</Text>
                     <Text style={styles.contactValue}>{c.value}</Text>
                   </View>
-                </View>
+                </Pressable>
               ))}
             </View>
           </View>
@@ -148,5 +154,10 @@ const styles = StyleSheet.create({
   },
   contactIcon: { fontSize: 20, width: 26, textAlign: "center" },
   contactLabel: { color: "#6b7280", fontSize: 13, marginBottom: 2 },
-  contactValue: { color: "#111827", fontSize: 16, fontWeight: "700" },
+  contactValue: {
+    color: "#111827",
+    fontSize: 16,
+    fontWeight: "700",
+    textDecorationLine: "underline",
+  },
 });
